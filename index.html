@@ -53,8 +53,8 @@
       top: 18px;
       left: 18px;
       z-index: 1000;
-      max-width: 430px;
-      background: rgba(255, 255, 255, 0.9);
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(8px);
       padding: 18px;
       border-radius: 18px;
@@ -102,7 +102,7 @@
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.94);
       border: 1px solid rgba(100, 116, 139, 0.18);
       border-radius: 18px;
       padding: 18px;
@@ -137,7 +137,7 @@
     }
 
     ul {
-      margin: 0;
+      margin: 10px 0 0;
       padding-left: 18px;
     }
 
@@ -155,6 +155,10 @@
     .leaflet-popup-content {
       font-size: 14px;
       line-height: 1.5;
+    }
+
+    .section-gap {
+      margin-top: 14px;
     }
 
     @media (max-width: 980px) {
@@ -183,10 +187,19 @@
       <div class="map-card">
         <div class="map-header">
           <h1>Kauno potvyniai</h1>
-          <p>Čia rodomas tikras Kauno žemėlapis. Spausk ant pažymėtų vietų ir dešinėje matysi informaciją apie rajonus bei jų ryšį su potvyniais.</p>
+          <p>
+            Zonos pašalintos. Dabar ant žemėlapio yra maži paspaudžiami taškai prie rajonų pavadinimų.
+            Spausk ant taško ir dešinėje matysi informaciją.
+          </p>
           <div class="legend">
-            <div class="legend-item"><span class="legend-color" style="background: rgba(59,130,246,0.38);"></span> Pažymėta teritorija</div>
-            <div class="legend-item"><span class="legend-color" style="background: rgba(29,78,216,0.95);"></span> Aktyvi vieta</div>
+            <div class="legend-item">
+              <span class="legend-color" style="background: rgba(59,130,246,0.9);"></span>
+              Rajono taškas
+            </div>
+            <div class="legend-item">
+              <span class="legend-color" style="background: rgba(29,78,216,1);"></span>
+              Pasirinkta vieta
+            </div>
           </div>
         </div>
         <div id="map"></div>
@@ -197,23 +210,45 @@
       <div class="card">
         <div class="pill">Pasirinkta vieta</div>
         <h2 id="district-title">Senamiestis</h2>
-        <p id="district-summary">Kauno senoji miesto dalis prie santakos. Dėl artumo Nemunui ir Neries tėkmei ši vieta istoriškai buvo viena jautriausių vandens pakilimui.</p>
+        <p id="district-summary">
+          Viena jautriausių vietų Kaune, nes yra arti Nemuno ir Neries santakos.
+        </p>
       </div>
 
       <div class="card">
-        <h3>Istorinė informacija</h3>
-        <ul id="district-history"></ul>
+        <h3>Potvyniai Kaune: anksčiau ir dabar</h3>
+        <p><strong>Kaunas – potvynių miestas</strong></p>
+        <p class="section-gap">
+          Kauną nuolat veikė dviejų didelių upių – Nemuno ir Neries – santaka.
+          Pavasariniai potvyniai čia buvo įprasti iki pat XX a. vidurio, o kai kurie tapo istorinėmis stichijomis.
+        </p>
       </div>
 
       <div class="card">
-        <h3>Kodėl ši vieta svarbi?</h3>
+        <h3>1. Potvyniai Kaune anksčiau</h3>
+        <ul id="history-list"></ul>
+      </div>
+
+      <div class="card">
+        <h3>Didžiausia rizika potvyniams išlieka</h3>
+        <ul>
+          <li>Vilijampolėje (prie Neries)</li>
+          <li>Šančiuose (prie Nemuno)</li>
+          <li>Panemunėje</li>
+          <li>Marvelėje</li>
+          <li>Senamiesčio pakrantėse</li>
+        </ul>
+        <p class="section-gap">
+          Šios teritorijos jautriausios tiek pavasario potvyniams, tiek staigioms liūtims.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Pasirinkto rajono paaiškinimas</h3>
         <p id="district-importance"></p>
-      </div>
-
-      <div class="card">
-        <h3>Bendra išvada</h3>
-        <p>Kaune potvynių rizika labiausiai siejasi su upių artumu, žemesnėmis vietomis, pavasariniu polaidžiu ir ledonešiu. Ypač svarbios teritorijos yra esančios šalia Nemuno, Neries ir santakos zonos.</p>
-        <p class="footer-note">Pastaba: pažymėtos vietos yra projektui pritaikytos apytikslės zonos.</p>
+        <p class="footer-note">
+          Pastaba: taškai padėti prie rajonų pavadinimų žemėlapyje, todėl vieta yra apytikslė ir skirta aiškiam pristatymui.
+        </p>
       </div>
     </aside>
   </div>
@@ -225,102 +260,77 @@
   ></script>
 
   <script>
+    const kaunasHistory = [
+      '1926 m. potvynis – Senamiesčio gatvės buvo apsemtos iki 2 m gylio, jomis žmonės plaukiojo valtimis. Kovo 11 d. Nemune prasidėjo ledonešis, neišlaikęs sugriuvo Vilijampolės tiltas, bet sangrūdos buvo pralaužtos ir vandens lygis staiga nukrito 4–5 m. Nuo potvynio nukentėjo 700 šeimų.',
+      '1929 m. potvynis – potvynio metu sugriauti Vilijampolės tiltas ir Aleksoto tiltas.',
+      'Didysis 1931 m. potvynis – vienas didžiausių užfiksuotų potvynių. Vanduo apsėmė Vilijampolę, Senamiestį, Nemuno salą. Kauniečiai gatvėmis plaukiojo valtimis, vanduo siekė pirmuosius pastatų aukštus. Potvynio metu upe plaukė ledo sangrūdos, kurios dar labiau kėlė vandens lygį.',
+      '1936 m. potvynis – užlietos teritorijos: Vilijampolė, Senamiestis, Šančiai.',
+      '1946 m. potvynis – vienas grėsmingiausių pokario laikotarpiu. Nustatyti itin aukšti Nemuno vandens lygiai. Vanduo užliejo Panemunę ir žemesnes Senamiesčio dalis. Laisvės alėja buvo apsemta 1 metro aukščio sluoksniu, buvo nunešta daugiau kaip 10 namų, buvo žmonių aukų. Po potvynio Vilijampolėje ir kai kuriose Senamiesčio gatvėse ledo krūvos siekė antro aukšto langus.',
+      '1951 m. potvynis – Nemunas buvo pakilęs apie 640 cm aukščiau nulinės žymos.',
+      '1958 m. potvynis – laikomas vienu didžiausių hidrologinių įvykių per visą XX a. Lietuvoje. Nemuno debitas buvo ekstremaliai didelis. Kaune registruoti ūkinių pastatų ir kelių apsemimai.',
+      '1979 m. potvynis – reikšmingas dėl ledo sangrūdų. Apsemta dalis žemesnių gyvenamųjų vietovių prie Kauno marių žemupio.'
+    ];
+
     const districtData = {
-      senamiestis: {
-        title: 'Senamiestis',
-        summary: 'Kauno senoji miesto dalis prie santakos. Dėl artumo Nemunui ir Neries tėkmei ši vieta istoriškai buvo viena jautriausių vandens pakilimui.',
-        history: [
-          'Ankstesniais laikotarpiais pavasariniai potvyniai galėjo paveikti prie upių esančias miesto dalis.',
-          'Ledonešis ir staigus polaidis didindavo užliejimo pavojų ties žemiausiomis vietomis.',
-          'Miesto centrinė padėtis reiškė, kad potvynių padariniai buvo ypač pastebimi gyventojams.'
-        ],
-        importance: 'Senamiestis svarbus todėl, kad čia aiškiai matomas ryšys tarp miesto kūrimosi prie upių ir gamtinių grėsmių. Ši vieta padeda suprasti, kodėl Kauno istorijoje potvyniai buvo tokie reikšmingi.',
-        center: [54.8974, 23.8868],
-        radius: 350
-      },
       vilijampole: {
         title: 'Vilijampolė',
-        summary: 'Vilijampolė yra arti santakos zonos, todėl ją veikė upių lygio pokyčiai ir polaidžio laikotarpiai.',
-        history: [
-          'Žemesnės vietos istoriškai buvo jautresnės pavasariniam patvinimui.',
-          'Vandens lygio kilimas galėjo apsunkinti susisiekimą ir kasdienį gyvenimą.',
-          'Dėl vietos prie upių ši teritorija svarbi kalbant apie Kauno potvynių geografiją.'
-        ],
-        importance: 'Vilijampolė leidžia parodyti, kaip arti pagrindinių vandens kelių esančios miesto dalys dažniau susidurdavo su užliejimo rizika.',
-        center: [54.9035, 23.8775],
-        radius: 650
+        summary: 'Viena rizikingiausių vietų prie Neries ir santakos zonos.',
+        importance: 'Vilijampolė yra viena iš jautriausių vietų potvyniams, nes yra arti Neries ir santakos. Būtent čia istoriniai potvyniai ne kartą darė didelę žalą.',
+        point: [54.9030, 23.8815]
+      },
+      senamiestis: {
+        title: 'Senamiestis',
+        summary: 'Jautri vieta prie santakos ir Nemuno pakrančių.',
+        importance: 'Senamiesčio pakrantės istoriškai buvo viena pažeidžiamiausių Kauno vietų. Čia vanduo lengvai pasiekdavo žemesnes gatves ir pastatus.',
+        point: [54.8966, 23.8878]
       },
       aleksotas: {
         title: 'Aleksotas',
-        summary: 'Aleksotas yra prie Nemuno. Rajono reljefas nevienodas, todėl rizika skirtingose vietose galėjo skirtis.',
-        history: [
-          'Prie upės esančios dalys buvo jautresnės pakilusiam vandeniui.',
-          'Aukštesnės vietos veikė kaip natūralesnė apsauga nuo tiesioginio užliejimo.',
-          'Rajonas svarbus lyginant, kaip reljefas keičia potvynių poveikį.'
-        ],
-        importance: 'Aleksotas padeda paaiškinti, kad ne visas rajonas vienodai pažeidžiamas: didelę reikšmę turi vietovės aukštis ir atstumas nuo upės.',
-        center: [54.8926, 23.8875],
-        radius: 900
-      },
-      zemieji_sanciai: {
-        title: 'Žemieji Šančiai',
-        summary: 'Pats pavadinimas rodo žemesnę teritoriją. Dėl artumo Nemunui ši vieta istoriškai siejama su didesne užliejimo tikimybe.',
-        history: [
-          'Žemesnės pakrantės vietos dažniau patirdavo vandens poveikį polaidžio metu.',
-          'Potvyniai galėjo paveikti kelius, sodybas ir kasdienį judėjimą.',
-          'Tai vienas aiškiausių pavyzdžių, kaip vietovės aukštis susijęs su rizika.'
-        ],
-        importance: 'Žemieji Šančiai yra labai geras pavyzdys, kaip pats reljefas ir artumas upei padidina potvynio tikimybę.',
-        center: [54.8950, 23.9145],
-        radius: 950
-      },
-      panemune: {
-        title: 'Panemunė',
-        summary: 'Panemunė driekiasi palei Nemuną, todėl potvynių tema čia ypač natūrali ir lengvai paaiškinama.',
-        history: [
-          'Pakrantės ruožai jautriai reaguodavo į vandens lygio kilimą.',
-          'Pavasariniai potvyniai galėjo paveikti žemesnes gyvenamąsias ir rekreacines vietas.',
-          'Šis rajonas padeda matyti ilgą sąlytį tarp miesto plėtros ir upės.'
-        ],
-        importance: 'Panemunė svarbi todėl, kad ji aiškiai parodo, kaip gyvenimas prie didelės upės duoda ir privalumų, ir nuolatinę gamtinę riziką.',
-        center: [54.8830, 23.9385],
-        radius: 1100
+        summary: 'Rajonas prie Nemuno, kur svarbi reljefo ir pakrančių įtaka.',
+        importance: 'Aleksotas svarbus todėl, kad prie upės esančios jo dalys yra jautresnės vandens kilimui. Istoriniuose potvyniuose nukentėjo ir Aleksoto tilto zona.',
+        point: [54.8930, 23.8825]
       },
       marvele: {
         title: 'Marvelė',
-        summary: 'Marvelė yra prie Nemuno esančioje miesto dalyje, kur potvynių rizika susijusi su pakrančių padėtimi ir vietiniu reljefu.',
-        history: [
-          'Žemesnės pakrantės vietos galėjo būti periodiškai užliejamos.',
-          'Pavasarinis sniego tirpsmas didindavo vandens lygį ir poveikį aplinkinėms teritorijoms.',
-          'Rajonas tinka parodyti, kaip potvyniai veikė ne tik centrą, bet ir pakraštines miesto zonas.'
-        ],
-        importance: 'Marvelė išplečia projekto vaizdą ir leidžia parodyti, kad potvynių tema Kaune neapsiriboja vien centru ar santaka.',
-        center: [54.8850, 23.8645],
-        radius: 850
+        summary: 'Prie Nemuno esanti teritorija, jautri užliejimui ir liūtims.',
+        importance: 'Marvelė išlieka rizikinga dėl artumo Nemunui ir žemesnių vietų prie pakrantės. Tai viena iš teritorijų, kur potvynių rizika minima ir šiandien.',
+        point: [54.8878, 23.8665]
+      },
+      zemieji_sanciai: {
+        title: 'Žemieji Šančiai',
+        summary: 'Žemesnė teritorija prie Nemuno, kur potvynių rizika yra didelė.',
+        importance: 'Šančiai, ypač jų žemesnės dalys prie Nemuno, yra tarp jautriausių potvyniams teritorijų. Čia vandens lygio pakilimas gali greitai paveikti pakrantės zonas.',
+        point: [54.8945, 23.9175]
+      },
+      panemune: {
+        title: 'Panemunė',
+        summary: 'Ilga pakrantės zona palei Nemuną, istoriškai jautri potvyniams.',
+        importance: 'Panemunė yra tiesiogiai susijusi su Nemunu, todėl pavasariniai potvyniai ir staigūs vandens lygio pakilimai čia išlieka svarbi rizika.',
+        point: [54.8795, 23.9480]
       },
       lampedziai: {
         title: 'Lampėdžiai',
-        summary: 'Lampėdžiai yra vakarinėje Kauno dalyje. Ši vieta padeda išplėsti žemėlapį ir palyginti skirtingus miesto rajonus.',
-        history: [
-          'Ši teritorija naudinga lyginamajai projekto daliai.',
-          'Čia galima parodyti, kad vandens telkiniai ir pakrantės formuoja vietovės jautrumą užliejimui.',
-          'Rajonas svarbus kaip platesnio Kauno kraštovaizdžio dalis.'
-        ],
-        importance: 'Lampėdžiai padeda projektui neapsiriboti tik centrine miesto dalimi ir parodyti platesnį vandens bei miesto santykį.',
-        center: [54.9145, 23.8355],
-        radius: 900
+        summary: 'Vakarinė Kauno dalis prie vandens telkinių ir Nemuno pakrančių.',
+        importance: 'Lampėdžiai projekte svarbūs kaip vakarinė Kauno dalis, leidžianti parodyti platesnį miesto ir vandens santykį.',
+        point: [54.9118, 23.8335]
       }
     };
 
     const titleEl = document.getElementById('district-title');
     const summaryEl = document.getElementById('district-summary');
-    const historyEl = document.getElementById('district-history');
     const importanceEl = document.getElementById('district-importance');
+    const historyListEl = document.getElementById('history-list');
+
+    kaunasHistory.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      historyListEl.appendChild(li);
+    });
 
     const map = L.map('map', {
       zoomControl: true,
       scrollWheelZoom: false
-    }).setView([54.8985, 23.9036], 13);
+    }).setView([54.8955, 23.9065], 12.8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -328,7 +338,6 @@
     }).addTo(map);
 
     const layers = {};
-    let activeId = null;
 
     function updateSidePanel(id) {
       const data = districtData[id];
@@ -337,41 +346,35 @@
       titleEl.textContent = data.title;
       summaryEl.textContent = data.summary;
       importanceEl.textContent = data.importance;
-
-      historyEl.innerHTML = '';
-      data.history.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        historyEl.appendChild(li);
-      });
     }
 
     function setActiveDistrict(id) {
-      activeId = id;
       Object.entries(layers).forEach(([key, layer]) => {
         const isActive = key === id;
         layer.setStyle({
+          radius: isActive ? 9 : 7,
           color: isActive ? '#1d4ed8' : '#2563eb',
-          weight: isActive ? 3 : 2,
-          fillColor: '#60a5fa',
-          fillOpacity: isActive ? 0.42 : 0.26
+          fillColor: isActive ? '#1d4ed8' : '#60a5fa',
+          fillOpacity: 1,
+          weight: isActive ? 3 : 2
         });
       });
+
       updateSidePanel(id);
     }
 
     Object.entries(districtData).forEach(([id, data]) => {
-      const circle = L.circle(data.center, {
-        radius: data.radius,
+      const marker = L.circleMarker(data.point, {
+        radius: 7,
         color: '#2563eb',
         weight: 2,
         fillColor: '#60a5fa',
-        fillOpacity: 0.26
+        fillOpacity: 1
       }).addTo(map);
 
-      circle.bindPopup(`<strong>${data.title}</strong><br>Paspaudus ši zona pažymima dešinėje.`);
-      circle.on('click', () => setActiveDistrict(id));
-      layers[id] = circle;
+      marker.bindPopup(`<strong>${data.title}</strong><br>Paspausk ir informacija pasikeis dešinėje.`);
+      marker.on('click', () => setActiveDistrict(id));
+      layers[id] = marker;
     });
 
     setActiveDistrict('senamiestis');
