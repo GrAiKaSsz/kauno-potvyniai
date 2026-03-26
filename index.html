@@ -4,52 +4,126 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kauno potvyniai – interaktyvus žemėlapis</title>
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #edf4f8 0%, #dfeaf1 100%);
+      background: #eef3f7;
       color: #1e293b;
     }
 
     .app {
       display: grid;
-      grid-template-columns: 1.6fr 0.9fr;
+      grid-template-columns: 1.7fr 0.9fr;
       min-height: 100vh;
     }
 
     .map-wrap {
-      position: relative;
       padding: 18px;
     }
 
+    .map-card {
+      position: relative;
+      height: calc(100vh - 36px);
+      min-height: 700px;
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(100, 116, 139, 0.18);
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .map-header {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 1000;
+      max-width: 430px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(100, 116, 139, 0.18);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    .map-header h1 {
+      margin: 0 0 10px;
+      font-size: 31px;
+      line-height: 1.1;
+    }
+
+    .map-header p {
+      margin: 0;
+      line-height: 1.55;
+      color: #475569;
+    }
+
+    .legend {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 14px;
+      color: #334155;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(30, 41, 59, 0.2);
+    }
+
     .panel {
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(10px);
-      border-left: 1px solid rgba(100,116,139,0.18);
-      padding: 24px;
+      padding: 18px 18px 18px 0;
       overflow-y: auto;
     }
 
     .card {
-      background: rgba(255,255,255,0.75);
-      border: 1px solid rgba(100,116,139,0.18);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(100, 116, 139, 0.18);
       border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
       margin-bottom: 16px;
     }
 
-    h1 {
-      margin: 0 0 10px;
-      font-size: 32px;
-      line-height: 1.1;
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.12);
+      color: #2563eb;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 10px;
     }
 
     h2 {
-      margin: 0 0 8px;
-      font-size: 22px;
+      margin: 0 0 10px;
+      font-size: 21px;
     }
 
     h3 {
@@ -58,136 +132,29 @@
     }
 
     p {
-      margin: 0 0 10px;
-      line-height: 1.55;
-    }
-
-    .muted {
-      color: #475569;
-    }
-
-    .legend {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: #334155;
-    }
-
-    .legend-color {
-      width: 16px;
-      height: 16px;
-      border-radius: 6px;
-      border: 1px solid rgba(30,41,59,0.25);
-    }
-
-    .map-card {
-      height: calc(100vh - 36px);
-      min-height: 680px;
-      position: relative;
-      overflow: hidden;
-      padding: 0;
-    }
-
-    .map-header {
-      position: absolute;
-      left: 18px;
-      top: 18px;
-      z-index: 3;
-      max-width: 440px;
-      background: rgba(255,255,255,0.78);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(100,116,139,0.18);
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.08);
-    }
-
-    .map-stage {
-      position: absolute;
-      inset: 0;
-    }
-
-    svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.7), transparent 30%),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.55), transparent 30%),
-        linear-gradient(180deg, #d9e8ef 0%, #cfdde6 100%);
-    }
-
-    .district {
-      fill: rgba(59, 130, 246, 0.26);
-      stroke: rgba(30, 64, 175, 0.9);
-      stroke-width: 2;
-      cursor: pointer;
-      transition: fill 0.18s ease, stroke-width 0.18s ease, transform 0.18s ease;
-      transform-origin: center;
-    }
-
-    .district:hover,
-    .district.active {
-      fill: rgba(37, 99, 235, 0.42);
-      stroke-width: 3;
-    }
-
-    .river {
-      fill: none;
-      stroke: rgba(14, 116, 144, 0.95);
-      stroke-width: 16;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      opacity: 0.88;
-    }
-
-    .river-secondary {
-      fill: none;
-      stroke: rgba(6, 182, 212, 0.8);
-      stroke-width: 10;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .river-label,
-    .district-label {
-      font-size: 15px;
-      font-weight: 700;
-      fill: #0f172a;
-      pointer-events: none;
-      text-anchor: middle;
+      margin: 0;
+      line-height: 1.6;
     }
 
     ul {
+      margin: 0;
       padding-left: 18px;
-      margin: 10px 0 0;
     }
 
-    li { margin-bottom: 8px; line-height: 1.5; }
-
-    .pill {
-      display: inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(59, 130, 246, 0.12);
-      color: #1d4ed8;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 10px;
+    li {
+      margin-bottom: 8px;
+      line-height: 1.55;
     }
 
     .footer-note {
+      margin-top: 12px;
       font-size: 13px;
       color: #64748b;
-      margin-top: 14px;
+    }
+
+    .leaflet-popup-content {
+      font-size: 14px;
+      line-height: 1.5;
     }
 
     @media (max-width: 980px) {
@@ -195,14 +162,17 @@
         grid-template-columns: 1fr;
       }
 
+      .panel {
+        padding: 0 18px 18px 18px;
+      }
+
       .map-card {
-        height: 70vh;
+        height: 72vh;
         min-height: 520px;
       }
 
-      .panel {
-        border-left: none;
-        border-top: 1px solid rgba(100,116,139,0.18);
+      .map-header {
+        max-width: calc(100% - 36px);
       }
     }
   </style>
@@ -210,55 +180,24 @@
 <body>
   <div class="app">
     <div class="map-wrap">
-      <div class="card map-card">
+      <div class="map-card">
         <div class="map-header">
           <h1>Kauno potvyniai</h1>
-          <p class="muted">Interaktyvus žemėlapis apie Kauno rajonus ir jų ryšį su istoriniais potvyniais. Spausk ant rajono ir dešinėje matysi informaciją.</p>
+          <p>Čia rodomas tikras Kauno žemėlapis. Spausk ant pažymėtų vietų ir dešinėje matysi informaciją apie rajonus bei jų ryšį su potvyniais.</p>
           <div class="legend">
-            <div class="legend-item"><span class="legend-color" style="background: rgba(59,130,246,0.26);"></span> Rajonas</div>
-            <div class="legend-item"><span class="legend-color" style="background: rgba(37,99,235,0.42);"></span> Pasirinktas rajonas</div>
-            <div class="legend-item"><span class="legend-color" style="background: rgba(14,116,144,0.9);"></span> Upės</div>
+            <div class="legend-item"><span class="legend-color" style="background: rgba(59,130,246,0.38);"></span> Pažymėta teritorija</div>
+            <div class="legend-item"><span class="legend-color" style="background: rgba(29,78,216,0.95);"></span> Aktyvi vieta</div>
           </div>
         </div>
-
-        <div class="map-stage">
-          <svg viewBox="0 0 1200 800" aria-label="Kauno rajonų schema">
-            <path class="river" d="M 80 330 C 180 300, 260 290, 360 315 S 560 365, 670 350 S 920 285, 1110 315" />
-            <path class="river-secondary" d="M 520 80 C 560 160, 590 220, 620 290 S 660 420, 655 560" />
-
-            <text x="920" y="275" class="river-label">Neris</text>
-            <text x="635" y="525" class="river-label">Nemunas</text>
-
-            <polygon id="senamiestis" class="district" points="565,295 620,278 662,296 660,338 612,356 568,338" />
-            <text x="615" y="320" class="district-label">Senamiestis</text>
-
-            <polygon id="vilijampole" class="district" points="420,220 550,210 610,255 565,295 568,338 490,360 410,320 390,260" />
-            <text x="500" y="285" class="district-label">Vilijampolė</text>
-
-            <polygon id="aleksotas" class="district" points="500,375 595,365 675,390 705,460 645,530 530,525 465,455" />
-            <text x="585" y="445" class="district-label">Aleksotas</text>
-
-            <polygon id="zemieji_sanciai" class="district" points="680,360 805,342 900,372 905,425 825,465 710,445" />
-            <text x="802" y="405" class="district-label">Žemieji Šančiai</text>
-
-            <polygon id="panemune" class="district" points="820,460 930,450 1035,500 1018,590 895,620 800,560" />
-            <text x="920" y="540" class="district-label">Panemunė</text>
-
-            <polygon id="marvele" class="district" points="360,430 455,410 500,455 470,560 360,585 300,505" />
-            <text x="398" y="505" class="district-label">Marvelė</text>
-
-            <polygon id="lampedziai" class="district" points="220,150 345,135 420,185 390,260 300,290 205,235" />
-            <text x="310" y="215" class="district-label">Lampėdžiai</text>
-          </svg>
-        </div>
+        <div id="map"></div>
       </div>
     </div>
 
     <aside class="panel">
       <div class="card">
-        <div class="pill">Pasirinktas rajonas</div>
+        <div class="pill">Pasirinkta vieta</div>
         <h2 id="district-title">Senamiestis</h2>
-        <p id="district-summary">Kauno senoji miesto dalis, esanti arti Nemuno ir Neries santakos, todėl istoriškai jautri vandens lygio svyravimams.</p>
+        <p id="district-summary">Kauno senoji miesto dalis prie santakos. Dėl artumo Nemunui ir Neries tėkmei ši vieta istoriškai buvo viena jautriausių vandens pakilimui.</p>
       </div>
 
       <div class="card">
@@ -273,11 +212,17 @@
 
       <div class="card">
         <h3>Bendra išvada</h3>
-        <p>Kaune potvynių rizika daugiausia susijusi su upių artumu, žemesnėmis vietovėmis ir pavasariniu ledonešiu. Didžiausi istoriniai pokyčiai siejami su upių reguliavimu ir infrastruktūros plėtra.</p>
-        <p class="footer-note">Pastaba: ši versija yra mokykliniam projektui skirta internetinė demonstracija. Tekstus ir rajonų formas galima tikslinti toliau.</p>
+        <p>Kaune potvynių rizika labiausiai siejasi su upių artumu, žemesnėmis vietomis, pavasariniu polaidžiu ir ledonešiu. Ypač svarbios teritorijos yra esančios šalia Nemuno, Neries ir santakos zonos.</p>
+        <p class="footer-note">Pastaba: pažymėtos vietos yra projektui pritaikytos apytikslės zonos tikrame Kauno žemėlapyje. Vėliau galima įdėti dar tikslesnes ribas.</p>
       </div>
     </aside>
   </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
 
   <script>
     const districtData = {
@@ -289,7 +234,9 @@
           'Ledonešis ir staigus polaidis didindavo užliejimo pavojų ties žemiausiomis vietomis.',
           'Miesto centrinė padėtis reiškė, kad potvynių padariniai buvo ypač pastebimi gyventojams.'
         ],
-        importance: 'Senamiestis svarbus todėl, kad čia aiškiai matomas ryšys tarp miesto kūrimosi prie upių ir gamtinių grėsmių. Ši vieta padeda suprasti, kodėl Kauno istorijoje potvyniai buvo tokie reikšmingi.'
+        importance: 'Senamiestis svarbus todėl, kad čia aiškiai matomas ryšys tarp miesto kūrimosi prie upių ir gamtinių grėsmių. Ši vieta padeda suprasti, kodėl Kauno istorijoje potvyniai buvo tokie reikšmingi.',
+        center: [54.8974, 23.8868],
+        radius: 350
       },
       vilijampole: {
         title: 'Vilijampolė',
@@ -299,17 +246,21 @@
           'Vandens lygio kilimas galėjo apsunkinti susisiekimą ir kasdienį gyvenimą.',
           'Dėl vietos prie upių ši teritorija svarbi kalbant apie Kauno potvynių geografiją.'
         ],
-        importance: 'Vilijampolė leidžia parodyti, kaip arti pagrindinių vandens kelių esančios miesto dalys dažniau susidurdavo su užliejimo rizika.'
+        importance: 'Vilijampolė leidžia parodyti, kaip arti pagrindinių vandens kelių esančios miesto dalys dažniau susidurdavo su užliejimo rizika.',
+        center: [54.9035, 23.8775],
+        radius: 650
       },
       aleksotas: {
         title: 'Aleksotas',
-        summary: 'Aleksotas yra pietvakarinėje miesto dalyje prie Nemuno. Rajono reljefas nevienodas, todėl rizika skirtingose vietose galėjo skirtis.',
+        summary: 'Aleksotas yra prie Nemuno. Rajono reljefas nevienodas, todėl rizika skirtingose vietose galėjo skirtis.',
         history: [
           'Prie upės esančios dalys buvo jautresnės pakilusiam vandeniui.',
           'Aukštesnės vietos veikė kaip natūralesnė apsauga nuo tiesioginio užliejimo.',
           'Rajonas svarbus lyginant, kaip reljefas keičia potvynių poveikį.'
         ],
-        importance: 'Aleksotas padeda paaiškinti, kad ne visas rajonas vienodai pažeidžiamas: didelę reikšmę turi vietovės aukštis ir atstumas nuo upės.'
+        importance: 'Aleksotas padeda paaiškinti, kad ne visas rajonas vienodai pažeidžiamas: didelę reikšmę turi vietovės aukštis ir atstumas nuo upės.',
+        center: [54.8926, 23.8875],
+        radius: 900
       },
       zemieji_sanciai: {
         title: 'Žemieji Šančiai',
@@ -319,7 +270,9 @@
           'Potvyniai galėjo paveikti kelius, sodybas ir kasdienį judėjimą.',
           'Tai vienas aiškiausių pavyzdžių, kaip vietovės aukštis susijęs su rizika.'
         ],
-        importance: 'Žemieji Šančiai yra labai geras pavyzdys, kaip pats reljefas ir artumas upei padidina potvynio tikimybę.'
+        importance: 'Žemieji Šančiai yra labai geras pavyzdys, kaip pats reljefas ir artumas upei padidina potvynio tikimybę.',
+        center: [54.8950, 23.9145],
+        radius: 950
       },
       panemune: {
         title: 'Panemunė',
@@ -329,7 +282,9 @@
           'Pavasariniai potvyniai galėjo paveikti žemesnes gyvenamąsias ir rekreacines vietas.',
           'Šis rajonas padeda matyti ilgą sąlytį tarp miesto plėtros ir upės.'
         ],
-        importance: 'Panemunė svarbi todėl, kad ji aiškiai parodo, kaip gyvenimas prie didelės upės duoda ir privalumų, ir nuolatinę gamtinę riziką.'
+        importance: 'Panemunė svarbi todėl, kad ji aiškiai parodo, kaip gyvenimas prie didelės upės duoda ir privalumų, ir nuolatinę gamtinę riziką.',
+        center: [54.8830, 23.9385],
+        radius: 1100
       },
       marvele: {
         title: 'Marvelė',
@@ -339,7 +294,9 @@
           'Pavasarinis sniego tirpsmas didindavo vandens lygį ir poveikį aplinkinėms teritorijoms.',
           'Rajonas tinka parodyti, kaip potvyniai veikė ne tik centrą, bet ir pakraštines miesto zonas.'
         ],
-        importance: 'Marvelė išplečia projekto vaizdą ir leidžia parodyti, kad potvynių tema Kaune neapsiriboja vien centru ar santaka.'
+        importance: 'Marvelė išplečia projekto vaizdą ir leidžia parodyti, kad potvynių tema Kaune neapsiriboja vien centru ar santaka.',
+        center: [54.8850, 23.8645],
+        radius: 850
       },
       lampedziai: {
         title: 'Lampėdžiai',
@@ -349,7 +306,9 @@
           'Čia galima parodyti, kad vandens telkiniai ir pakrantės formuoja vietovės jautrumą užliejimui.',
           'Rajonas svarbus kaip platesnio Kauno kraštovaizdžio dalis.'
         ],
-        importance: 'Lampėdžiai padeda projektui neapsiriboti tik centrine miesto dalimi ir parodyti platesnį vandens bei miesto santykį.'
+        importance: 'Lampėdžiai padeda projektui neapsiriboti tik centrine miesto dalimi ir parodyti platesnį vandens bei miesto santykį.',
+        center: [54.9145, 23.8355],
+        radius: 900
       }
     };
 
@@ -357,14 +316,23 @@
     const summaryEl = document.getElementById('district-summary');
     const historyEl = document.getElementById('district-history');
     const importanceEl = document.getElementById('district-importance');
-    const districts = document.querySelectorAll('.district');
 
-    function setActiveDistrict(id) {
+    const map = L.map('map', {
+      zoomControl: true,
+      scrollWheelZoom: false
+    }).setView([54.8985, 23.9036], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const layers = {};
+    let activeId = null;
+
+    function updateSidePanel(id) {
       const data = districtData[id];
       if (!data) return;
-
-      districts.forEach(d => d.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
 
       titleEl.textContent = data.title;
       summaryEl.textContent = data.summary;
@@ -378,8 +346,32 @@
       });
     }
 
-    districts.forEach(district => {
-      district.addEventListener('click', () => setActiveDistrict(district.id));
+    function setActiveDistrict(id) {
+      activeId = id;
+      Object.entries(layers).forEach(([key, layer]) => {
+        const isActive = key === id;
+        layer.setStyle({
+          color: isActive ? '#1d4ed8' : '#2563eb',
+          weight: isActive ? 3 : 2,
+          fillColor: '#60a5fa',
+          fillOpacity: isActive ? 0.42 : 0.26
+        });
+      });
+      updateSidePanel(id);
+    }
+
+    Object.entries(districtData).forEach(([id, data]) => {
+      const circle = L.circle(data.center, {
+        radius: data.radius,
+        color: '#2563eb',
+        weight: 2,
+        fillColor: '#60a5fa',
+        fillOpacity: 0.26
+      }).addTo(map);
+
+      circle.bindPopup(`<strong>${data.title}</strong><br>Paspaudus ši zona pažymima dešinėje.`);
+      circle.on('click', () => setActiveDistrict(id));
+      layers[id] = circle;
     });
 
     setActiveDistrict('senamiestis');
