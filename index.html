@@ -249,9 +249,8 @@
       </div>
 
       <p class="footer-note">
-          Pastaba: taškai padėti prie rajonų pavadinimų žemėlapyje, todėl vieta yra apytikslė ir skirta aiškiam pristatymui.
-        </p>
-      </div>
+        Pastaba: taškai padėti prie rajonų pavadinimų žemėlapyje, todėl vieta yra apytikslė ir skirta aiškiam pristatymui.
+      </p>
     </aside>
   </div>
 
@@ -265,7 +264,7 @@
     const kaunasHistory = [
       '1926 m. potvynis – Senamiesčio gatvės buvo apsemtos iki 2 m gylio, jomis žmonės plaukiojo valtimis. Kovo 11 d. Nemune prasidėjo ledonešis, neišlaikęs sugriuvo Vilijampolės tiltas, bet sangrūdos buvo pralaužtos ir vandens lygis staiga nukrito 4–5 m. Nuo potvynio nukentėjo 700 šeimų.',
       '1929 m. potvynis – potvynio metu sugriauti Vilijampolės tiltas ir Aleksoto tiltas.',
-      'Didysis 1931 m. potvynis – vienas didžiausių užfiksuotų potvynių. Vanduo apsėmė Vilijampolę, Senamiestį, Nemuno salą. Kauniečiai gatvėmis plaukiojo valtimis, vanduo siekė pirmuosius pastatų aukštus. Potvynio metu upe plaukė ledo sangrūdos, kurios dar labiau kėlė vandens lygį.',
+      'Didysis 1931 m. potvynis – vienas didžiausių užfiksuotų potvynių. Vanduo apsėmė Vilijampolę, Senamiesčį, Nemuno salą. Kauniečiai gatvėmis plaukiojo valtimis, vanduo siekė pirmuosius pastatų aukštus. Potvynio metu upe plaukė ledo sangrūdos, kurios dar labiau kėlė vandens lygį.',
       '1936 m. potvynis – užlietos teritorijos: Vilijampolė, Senamiestis, Šančiai.',
       '1946 m. potvynis – vienas grėsmingiausių pokario laikotarpiu. Nustatyti itin aukšti Nemuno vandens lygiai. Vanduo užliejo Panemunę ir žemesnes Senamiesčio dalis. Laisvės alėja buvo apsemta 1 metro aukščio sluoksniu, buvo nunešta daugiau kaip 10 namų, buvo žmonių aukų. Po potvynio Vilijampolėje ir kai kuriose Senamiesčio gatvėse ledo krūvos siekė antro aukšto langus.',
       '1951 m. potvynis – Nemunas buvo pakilęs apie 640 cm aukščiau nulinės žymos.',
@@ -353,6 +352,8 @@
     function setActiveDistrict(id) {
       Object.entries(layers).forEach(([key, layer]) => {
         const isActive = key === id;
+        const data = districtData[key];
+
         layer.setStyle({
           radius: isActive ? 9 : 7,
           color: isActive ? '#1d4ed8' : '#2563eb',
@@ -360,6 +361,15 @@
           fillOpacity: 1,
           weight: isActive ? 3 : 2
         });
+
+        if (isActive) {
+          layer.bindPopup(
+            `<strong>${data.title}</strong><br>Paspausk ir informacija pasikeis dešinėje.`
+          ).openPopup();
+        } else {
+          layer.closePopup();
+          layer.unbindPopup();
+        }
       });
 
       updateSidePanel(id);
@@ -374,12 +384,11 @@
         fillOpacity: 1
       }).addTo(map);
 
-      marker.bindPopup(`<strong>${data.title}</strong><br>Paspausk ir informacija pasikeis dešinėje.`);
       marker.on('click', () => setActiveDistrict(id));
       layers[id] = marker;
     });
 
-    setActiveDistrict('senamiestis');
+    updateSidePanel('senamiestis');
   </script>
 </body>
 </html>
