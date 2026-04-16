@@ -161,6 +161,11 @@
       margin-top: 14px;
     }
 
+    .empty-text {
+      color: #64748b;
+      font-style: italic;
+    }
+
     @media (max-width: 980px) {
       .app {
         grid-template-columns: 1fr;
@@ -188,7 +193,7 @@
         <div class="map-header">
           <h1>Kauno potvyniai</h1>
           <p>
-            Ant žemėlapio pažymėti rajonų taškai. Paspaudus konkretų rajoną, dešinėje rodoma būtent tam rajonui priskirta informacija.
+            Paspaudus ant rajono taško, dešinėje rodoma tik tam rajonui priskirta informacija ir su juo susiję istoriniai potvynių faktai.
           </p>
           <div class="legend">
             <div class="legend-item">
@@ -218,14 +223,16 @@
       </div>
 
       <div class="card">
-        <h3 id="floods-title">Potvyniai Senamiestyje: anksčiau ir dabar</h3>
-        <p><strong id="floods-subtitle">Senamiestis – viena jautriausių vietų</strong></p>
-        <p class="section-gap" id="floods-description"></p>
+        <h3>Trumpai apie rajono ryšį su potvyniais</h3>
+        <p id="district-flood-description"></p>
       </div>
 
       <div class="card">
-        <h3 id="history-heading">Istoriniai potvyniai šiame rajone</h3>
+        <h3 id="history-heading">Su šiuo rajonu susiję istoriniai faktai</h3>
         <ul id="history-list"></ul>
+        <p id="history-empty" class="empty-text" style="display: none;">
+          Šiam rajonui aiškiai priskirtų faktų šiame sąraše nėra.
+        </p>
       </div>
 
       <div class="card">
@@ -251,16 +258,14 @@
         title: 'Vilijampolė',
         summary: 'Viena rizikingiausių vietų prie Neries ir santakos zonos.',
         importance: 'Vilijampolė yra viena iš jautriausių vietų potvyniams, nes yra arti Neries ir santakos. Būtent čia istoriniai potvyniai ne kartą darė didelę žalą.',
-        floodTitle: 'Potvyniai Vilijampolėje: anksčiau ir dabar',
-        floodSubtitle: 'Vilijampolė – ypač jautri santakos zona',
-        floodDescription: 'Vilijampolę stipriai veikė artumas Neriai ir santakai. Dėl šios priežasties čia vanduo per istorinius potvynius kilo greitai, buvo niokojama infrastruktūra ir tiltai.',
-        risk: 'Šiandien Vilijampolė išlieka viena jautriausių vietų dėl artumo Neries pakrantei ir žemesnių teritorijų prie vandens.',
+        floodDescription: 'Vilijampolė istoriniuose šaltiniuose minima labai dažnai, nes čia ypač jautri tiek pakrantė, tiek susisiekimo infrastruktūra.',
+        risk: 'Vilijampolė išlieka viena jautriausių vietų dėl artumo Neries pakrantei ir žemesnių teritorijų prie vandens.',
         history: [
-          '1926 m. potvynis – neišlaikęs sugriuvo Vilijampolės tiltas. Nuo potvynio nukentėjo apie 700 šeimų.',
-          '1929 m. potvynis – potvynio metu buvo sugriautas Vilijampolės tiltas.',
-          '1931 m. didysis potvynis – Vilijampolė buvo viena labiausiai užlietų Kauno vietų.',
+          '1926 m. potvynis – neišlaikęs sugriuvo Vilijampolės tiltas, o nuo potvynio nukentėjo 700 šeimų.',
+          '1929 m. potvynis – potvynio metu sugriautas Vilijampolės tiltas.',
+          '1931 m. didysis potvynis – vanduo apsėmė Vilijampolę, tai buvo viena iš labiausiai paveiktų vietų.',
           '1936 m. potvynis – tarp užlietų teritorijų minima Vilijampolė.',
-          '1946 m. potvynis – po potvynio Vilijampolėje ledo krūvos kai kur siekė net antro aukšto langus.'
+          '1946 m. potvynis – po potvynio Vilijampolėje ledo krūvos kai kur siekė antro aukšto langus.'
         ],
         point: [54.90677, 23.88642]
       },
@@ -268,14 +273,12 @@
         title: 'Senamiestis',
         summary: 'Viena jautriausių vietų Kaune, nes yra arti Nemuno ir Neries santakos.',
         importance: 'Senamiesčio pakrantės istoriškai buvo viena pažeidžiamiausių Kauno vietų. Čia vanduo lengvai pasiekdavo žemesnes gatves ir pastatus.',
-        floodTitle: 'Potvyniai Senamiestyje: anksčiau ir dabar',
-        floodSubtitle: 'Senamiestis – viena jautriausių vietų',
-        floodDescription: 'Senamiestis ilgą laiką kentėjo nuo potvynių, nes yra labai arti dviejų upių santakos. Čia vanduo užliedavo gatves, kiemus ir žemesnes pastatų dalis.',
+        floodDescription: 'Senamiestis dažnai kentėdavo per didesnius potvynius, nes yra prie santakos ir turi žemiau esančių vietų.',
         risk: 'Didžiausia rizika išlieka pakrantėse ir žemesnėse vietose, kurios yra arčiau Nemuno ir Neries.',
         history: [
           '1926 m. potvynis – Senamiesčio gatvės buvo apsemtos iki 2 m gylio, jomis žmonės plaukiojo valtimis.',
-          '1931 m. didysis potvynis – vanduo apsėmė Senamiestį, vandens lygis siekė pirmuosius pastatų aukštus.',
-          '1936 m. potvynis – Senamiestis buvo tarp užlietų teritorijų.',
+          '1931 m. didysis potvynis – vanduo apsėmė Senamiestį, o vandens lygis siekė pirmuosius pastatų aukštus.',
+          '1936 m. potvynis – tarp užlietų teritorijų minima Senamiesčio zona.',
           '1946 m. potvynis – vanduo užliejo žemesnes Senamiesčio dalis, o kai kuriose gatvėse ledo krūvos siekė antro aukšto langus.'
         ],
         point: [54.89547, 23.88694]
@@ -284,14 +287,10 @@
         title: 'Aleksotas',
         summary: 'Rajonas prie Nemuno, kur svarbi reljefo ir pakrančių įtaka.',
         importance: 'Aleksotas svarbus todėl, kad prie upės esančios jo dalys yra jautresnės vandens kilimui. Istoriniuose potvyniuose nukentėjo ir Aleksoto tilto zona.',
-        floodTitle: 'Potvyniai Aleksote: anksčiau ir dabar',
-        floodSubtitle: 'Aleksotas – svarbi pakrantės ir tilto zona',
-        floodDescription: 'Aleksotas ne visose vietose vienodai jautrus potvyniams, tačiau žemiau esančios vietos prie Nemuno ir tilto prieigos istoriškai buvo pažeidžiamos.',
+        floodDescription: 'Aleksoto atveju ryškiausiai išsiskiria ne visas rajonas, o būtent tilto ir susisiekimo zonos reikšmė per potvynius.',
         risk: 'Didžiausia rizika Aleksote siejama su pakrančių zonomis ir vietomis arčiau Nemuno.',
         history: [
-          '1929 m. potvynis – potvynio metu buvo sugriautas Aleksoto tiltas.',
-          'Istoriniuose potvyniuose nukentėdavo prie upės ir tilto esančios teritorijos.',
-          'Aleksoto reikšmė labiausiai siejama su susisiekimo infrastruktūra ir tilto zona.'
+          '1929 m. potvynis – potvynio metu buvo sugriautas Aleksoto tiltas.'
         ],
         point: [54.88184, 23.89981]
       },
@@ -299,28 +298,19 @@
         title: 'Marvelė',
         summary: 'Prie Nemuno esanti teritorija, jautri užliejimui ir liūtims.',
         importance: 'Marvelė išlieka rizikinga dėl artumo Nemunui ir žemesnių vietų prie pakrantės. Tai viena iš teritorijų, kur potvynių rizika minima ir šiandien.',
-        floodTitle: 'Potvyniai Marvelėje: anksčiau ir dabar',
-        floodSubtitle: 'Marvelė – žemesnė pakrantės teritorija',
-        floodDescription: 'Marvelė labiau svarbi kaip šiuolaikinės rizikos zona. Dėl reljefo ir artumo Nemunui ši teritorija gali būti jautri tiek pavasario potvyniams, tiek gausioms liūtims.',
+        floodDescription: 'Marvelė šiame istorinių faktų sąraše beveik tiesiogiai neminima, bet dėl savo padėties prie Nemuno išlieka svarbi rizikos požiūriu.',
         risk: 'Dabartinė rizika čia susijusi su užliejamomis pakrantėmis, staigesniu vandens kilimu ir lietaus vandens kaupimusi.',
-        history: [
-          'Tiesioginių išskirtinių istorinių įrašų apie Marvelę šiame sąraše nėra daug, tačiau teritorija minima kaip jautri užliejimui.',
-          'Marvelė šiandien vertinama kaip viena iš rizikingesnių pakrantės zonų Kaune.'
-        ],
+        history: [],
         point: [54.89784, 23.85724]
       },
       zemieji_sanciai: {
         title: 'Žemieji Šančiai',
         summary: 'Žemesnė teritorija prie Nemuno, kur potvynių rizika yra didelė.',
         importance: 'Šančiai, ypač jų žemesnės dalys prie Nemuno, yra tarp jautriausių potvyniams teritorijų. Čia vandens lygio pakilimas gali greitai paveikti pakrantės zonas.',
-        floodTitle: 'Potvyniai Žemuosiuose Šančiuose: anksčiau ir dabar',
-        floodSubtitle: 'Žemieji Šančiai – jautri Nemuno pakrantė',
-        floodDescription: 'Žemieji Šančiai yra arti Nemuno, todėl potvyniai pirmiausia paveikdavo pakrantės zonas ir žemiau esančias vietas. Šis rajonas istoriškai siejamas su užliejamomis teritorijomis.',
+        floodDescription: 'Šančių zona istoriniuose faktuose minima kaip viena iš užliejamų teritorijų, ypač kalbant apie žemiau esančias vietas prie Nemuno.',
         risk: 'Didžiausia grėsmė išlieka žemesnėse vietose prie upės, kur vanduo gali greitai pasiekti krantinę ir aplinkines teritorijas.',
         history: [
-          '1936 m. potvynis – tarp užlietų teritorijų minima Šančių zona.',
-          'Žemieji Šančiai istoriškai laikomi jautria vieta dėl žemos padėties prie Nemuno.',
-          'Ši teritorija ir šiandien išlieka tarp rizikingiausių potvyniams Kaune.'
+          '1936 m. potvynis – užlietų teritorijų sąraše minima Šančių zona.'
         ],
         point: [54.86461, 23.93457]
       },
@@ -328,14 +318,10 @@
         title: 'Panemunė',
         summary: 'Ilga pakrantės zona palei Nemuną, istoriškai jautri potvyniams.',
         importance: 'Panemunė yra tiesiogiai susijusi su Nemunu, todėl pavasariniai potvyniai ir staigūs vandens lygio pakilimai čia išlieka svarbi rizika.',
-        floodTitle: 'Potvyniai Panemunėje: anksčiau ir dabar',
-        floodSubtitle: 'Panemunė – ilga ir jautri Nemuno pakrantė',
-        floodDescription: 'Panemunė dėl savo ilgos pakrantės buvo ir tebėra jautri vandens lygio kilimui. Čia didžiausią įtaką daro tiesioginis ryšys su Nemuno vaga.',
+        floodDescription: 'Panemunė aiškiai minima tarp vietų, kurias paveikė vienas grėsmingiausių pokario potvynių.',
         risk: 'Panemunėje išlieka didelė rizika pakrantės ruožuose, ypač ten, kur teritorijos yra žemiau arba arčiau upės.',
         history: [
-          '1946 m. potvynis – vanduo užliejo Panemunę.',
-          'Panemunė istoriškai siejama su pakrantės užliejimu per didesnius Nemuno potvynius.',
-          'Ši vieta iki šiol laikoma viena jautriausių potvyniams Kaune.'
+          '1946 m. potvynis – vanduo užliejo Panemunę.'
         ],
         point: [54.85912, 23.96350]
       },
@@ -343,14 +329,9 @@
         title: 'Lampėdžiai',
         summary: 'Vakarinė Kauno dalis prie vandens telkinių ir Nemuno pakrančių.',
         importance: 'Lampėdžiai projekte svarbūs kaip vakarinė Kauno dalis, leidžianti parodyti platesnį miesto ir vandens santykį.',
-        floodTitle: 'Potvyniai Lampėdžiuose: anksčiau ir dabar',
-        floodSubtitle: 'Lampėdžiai – vakarinė vandens poveikio zona',
-        floodDescription: 'Lampėdžiai nėra taip dažnai minimi tarp garsiausių istorinių Kauno potvynių vietų, tačiau ši teritorija svarbi platesniam miesto ir vandens santykio supratimui.',
+        floodDescription: 'Lampėdžiai šiame istorinių faktų rinkinyje tiesiogiai neišskiriami, bet svarbūs kaip miesto vandens kraštovaizdžio dalis.',
         risk: 'Čia svarbiausia stebėti vandens telkinių ir pakrančių poveikį aplinkinėms teritorijoms.',
-        history: [
-          'Lampėdžiai labiau svarbūs kaip platesnio Kauno vandens kraštovaizdžio dalis.',
-          'Ryškių istorinių įrašų šiame sąraše mažiau, tačiau teritorija svarbi projekto žemėlapiui ir bendram kontekstui.'
-        ],
+        history: [],
         point: [54.91072, 23.82085]
       }
     };
@@ -358,11 +339,10 @@
     const titleEl = document.getElementById('district-title');
     const summaryEl = document.getElementById('district-summary');
     const importanceEl = document.getElementById('district-importance');
-    const floodsTitleEl = document.getElementById('floods-title');
-    const floodsSubtitleEl = document.getElementById('floods-subtitle');
-    const floodsDescriptionEl = document.getElementById('floods-description');
-    const historyListEl = document.getElementById('history-list');
+    const floodDescriptionEl = document.getElementById('district-flood-description');
     const historyHeadingEl = document.getElementById('history-heading');
+    const historyListEl = document.getElementById('history-list');
+    const historyEmptyEl = document.getElementById('history-empty');
     const riskEl = document.getElementById('district-risk');
 
     const map = L.map('map', {
@@ -384,18 +364,23 @@
       titleEl.textContent = data.title;
       summaryEl.textContent = data.summary;
       importanceEl.textContent = data.importance;
-      floodsTitleEl.textContent = data.floodTitle;
-      floodsSubtitleEl.textContent = data.floodSubtitle;
-      floodsDescriptionEl.textContent = data.floodDescription;
-      historyHeadingEl.textContent = `Istoriniai potvyniai ${data.title.toLowerCase()} rajone`;
+      floodDescriptionEl.textContent = data.floodDescription;
+      historyHeadingEl.textContent = `Su ${data.title.toLowerCase()} susiję istoriniai faktai`;
       riskEl.textContent = data.risk;
 
       historyListEl.innerHTML = '';
-      data.history.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        historyListEl.appendChild(li);
-      });
+
+      if (data.history.length === 0) {
+        historyEmptyEl.style.display = 'block';
+      } else {
+        historyEmptyEl.style.display = 'none';
+
+        data.history.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = item;
+          historyListEl.appendChild(li);
+        });
+      }
     }
 
     function setActiveDistrict(id) {
@@ -412,9 +397,7 @@
         });
 
         if (isActive) {
-          layer.bindPopup(
-            `<strong>${data.title}</strong><br>Pasirinktas rajonas`
-          ).openPopup();
+          layer.bindPopup(`<strong>${data.title}</strong><br>Pasirinktas rajonas`).openPopup();
         } else {
           layer.closePopup();
           layer.unbindPopup();
