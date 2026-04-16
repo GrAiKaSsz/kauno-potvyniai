@@ -157,10 +157,6 @@
       line-height: 1.5;
     }
 
-    .section-gap {
-      margin-top: 14px;
-    }
-
     .empty-text {
       color: #64748b;
       font-style: italic;
@@ -228,10 +224,10 @@
       </div>
 
       <div class="card">
-        <h3 id="history-heading">Su šiuo rajonu susiję istoriniai faktai</h3>
+        <h3 id="history-heading">Su Senamiesčiu susiję istoriniai faktai</h3>
         <ul id="history-list"></ul>
         <p id="history-empty" class="empty-text" style="display: none;">
-          Šiam rajonui aiškiai priskirtų faktų šiame sąraše nėra.
+          Šiam rajonui aiškiai priskirtų istorinių faktų šiame sąraše nėra.
         </p>
       </div>
 
@@ -256,6 +252,7 @@
     const districtData = {
       vilijampole: {
         title: 'Vilijampolė',
+        titleWith: 'Vilijampole',
         summary: 'Viena rizikingiausių vietų prie Neries ir santakos zonos.',
         importance: 'Vilijampolė yra viena iš jautriausių vietų potvyniams, nes yra arti Neries ir santakos. Būtent čia istoriniai potvyniai ne kartą darė didelę žalą.',
         floodDescription: 'Vilijampolė istoriniuose šaltiniuose minima labai dažnai, nes čia ypač jautri tiek pakrantė, tiek susisiekimo infrastruktūra.',
@@ -271,6 +268,7 @@
       },
       senamiestis: {
         title: 'Senamiestis',
+        titleWith: 'Senamiesčiu',
         summary: 'Viena jautriausių vietų Kaune, nes yra arti Nemuno ir Neries santakos.',
         importance: 'Senamiesčio pakrantės istoriškai buvo viena pažeidžiamiausių Kauno vietų. Čia vanduo lengvai pasiekdavo žemesnes gatves ir pastatus.',
         floodDescription: 'Senamiestis dažnai kentėdavo per didesnius potvynius, nes yra prie santakos ir turi žemiau esančių vietų.',
@@ -285,6 +283,7 @@
       },
       aleksotas: {
         title: 'Aleksotas',
+        titleWith: 'Aleksotu',
         summary: 'Rajonas prie Nemuno, kur svarbi reljefo ir pakrančių įtaka.',
         importance: 'Aleksotas svarbus todėl, kad prie upės esančios jo dalys yra jautresnės vandens kilimui. Istoriniuose potvyniuose nukentėjo ir Aleksoto tilto zona.',
         floodDescription: 'Aleksoto atveju ryškiausiai išsiskiria ne visas rajonas, o būtent tilto ir susisiekimo zonos reikšmė per potvynius.',
@@ -296,6 +295,7 @@
       },
       marvele: {
         title: 'Marvelė',
+        titleWith: 'Marvele',
         summary: 'Prie Nemuno esanti teritorija, jautri užliejimui ir liūtims.',
         importance: 'Marvelė išlieka rizikinga dėl artumo Nemunui ir žemesnių vietų prie pakrantės. Tai viena iš teritorijų, kur potvynių rizika minima ir šiandien.',
         floodDescription: 'Marvelė šiame istorinių faktų sąraše beveik tiesiogiai neminima, bet dėl savo padėties prie Nemuno išlieka svarbi rizikos požiūriu.',
@@ -305,6 +305,7 @@
       },
       zemieji_sanciai: {
         title: 'Žemieji Šančiai',
+        titleWith: 'Žemaisiais Šančiais',
         summary: 'Žemesnė teritorija prie Nemuno, kur potvynių rizika yra didelė.',
         importance: 'Šančiai, ypač jų žemesnės dalys prie Nemuno, yra tarp jautriausių potvyniams teritorijų. Čia vandens lygio pakilimas gali greitai paveikti pakrantės zonas.',
         floodDescription: 'Šančių zona istoriniuose faktuose minima kaip viena iš užliejamų teritorijų, ypač kalbant apie žemiau esančias vietas prie Nemuno.',
@@ -316,6 +317,7 @@
       },
       panemune: {
         title: 'Panemunė',
+        titleWith: 'Panemune',
         summary: 'Ilga pakrantės zona palei Nemuną, istoriškai jautri potvyniams.',
         importance: 'Panemunė yra tiesiogiai susijusi su Nemunu, todėl pavasariniai potvyniai ir staigūs vandens lygio pakilimai čia išlieka svarbi rizika.',
         floodDescription: 'Panemunė aiškiai minima tarp vietų, kurias paveikė vienas grėsmingiausių pokario potvynių.',
@@ -327,6 +329,7 @@
       },
       lampedziai: {
         title: 'Lampėdžiai',
+        titleWith: 'Lampėdžiais',
         summary: 'Vakarinė Kauno dalis prie vandens telkinių ir Nemuno pakrančių.',
         importance: 'Lampėdžiai projekte svarbūs kaip vakarinė Kauno dalis, leidžianti parodyti platesnį miesto ir vandens santykį.',
         floodDescription: 'Lampėdžiai šiame istorinių faktų rinkinyje tiesiogiai neišskiriami, bet svarbūs kaip miesto vandens kraštovaizdžio dalis.',
@@ -365,7 +368,7 @@
       summaryEl.textContent = data.summary;
       importanceEl.textContent = data.importance;
       floodDescriptionEl.textContent = data.floodDescription;
-      historyHeadingEl.textContent = `Su ${data.title.toLowerCase()} susiję istoriniai faktai`;
+      historyHeadingEl.textContent = `Su ${data.titleWith} susiję istoriniai faktai`;
       riskEl.textContent = data.risk;
 
       historyListEl.innerHTML = '';
