@@ -8,7 +8,6 @@
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
     crossorigin=""
   />
 
@@ -46,54 +45,6 @@
     #map {
       width: 100%;
       height: 100%;
-    }
-
-    .map-header {
-      position: absolute;
-      top: 18px;
-      left: 18px;
-      z-index: 1000;
-      max-width: 450px;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(8px);
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(100, 116, 139, 0.18);
-      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-    }
-
-    .map-header h1 {
-      margin: 0 0 10px;
-      font-size: 31px;
-      line-height: 1.1;
-    }
-
-    .map-header p {
-      margin: 0;
-      line-height: 1.55;
-      color: #475569;
-    }
-
-    .legend {
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      font-size: 14px;
-      color: #334155;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .legend-color {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(30, 41, 59, 0.2);
     }
 
     .panel {
@@ -175,33 +126,14 @@
         height: 72vh;
         min-height: 520px;
       }
-
-      .map-header {
-        max-width: calc(100% - 36px);
-      }
     }
   </style>
 </head>
+
 <body>
   <div class="app">
     <div class="map-wrap">
       <div class="map-card">
-        <div class="map-header">
-          <h1>Kauno potvyniai</h1>
-          <p>
-            Paspaudus ant rajono taško, dešinėje rodoma tik tam rajonui priskirta informacija ir su juo susiję istoriniai potvynių faktai.
-          </p>
-          <div class="legend">
-            <div class="legend-item">
-              <span class="legend-color" style="background: rgba(59,130,246,0.9);"></span>
-              Rajono taškas
-            </div>
-            <div class="legend-item">
-              <span class="legend-color" style="background: rgba(29,78,216,1);"></span>
-              Pasirinkta vieta
-            </div>
-          </div>
-        </div>
         <div id="map"></div>
       </div>
     </div>
@@ -244,7 +176,6 @@
 
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
 
@@ -266,6 +197,7 @@
         ],
         point: [54.90677, 23.88642]
       },
+
       senamiestis: {
         title: 'Senamiestis',
         titleWith: 'Senamiesčiu',
@@ -281,6 +213,7 @@
         ],
         point: [54.89547, 23.88694]
       },
+
       aleksotas: {
         title: 'Aleksotas',
         titleWith: 'Aleksotu',
@@ -293,6 +226,7 @@
         ],
         point: [54.88184, 23.89981]
       },
+
       marvele: {
         title: 'Marvelė',
         titleWith: 'Marvele',
@@ -303,6 +237,7 @@
         history: [],
         point: [54.89784, 23.85724]
       },
+
       zemieji_sanciai: {
         title: 'Žemieji Šančiai',
         titleWith: 'Žemaisiais Šančiais',
@@ -315,6 +250,7 @@
         ],
         point: [54.86461, 23.93457]
       },
+
       panemune: {
         title: 'Panemunė',
         titleWith: 'Panemune',
@@ -327,6 +263,7 @@
         ],
         point: [54.85912, 23.96350]
       },
+
       lampedziai: {
         title: 'Lampėdžiai',
         titleWith: 'Lampėdžiais',
@@ -423,7 +360,7 @@
       layers[id] = marker;
     });
 
-    updateSidePanel('senamiestis');
+    setActiveDistrict('senamiestis');
   </script>
 </body>
 </html>
